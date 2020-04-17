@@ -1,6 +1,7 @@
 import bcrypt
 import dbm
 import os
+import getpass
 from datetime import datetime
 from jupyterhub.auth import Authenticator
 from pathlib import Path
@@ -18,67 +19,64 @@ class NativeAuthenticator(Authenticator):
 
     COMMON_PASSWORDS = None
     check_common_password = Bool(
-        config=True,
-        default=False,
         help=("Creates a verification of password strength "
               "when a new user makes signup")
+    ).tag(
+        config=True,
+        default=False
     )
     minimum_password_length = Integer(
-        config=True,
-        default=1,
         help=("Check if the length of the password is at least this size on "
               "signup")
+    ).tag(
+        config=True,
+        default=1
     )
     allowed_failed_logins = Integer(
-        config=True,
-        default=0,
         help=("Configures the number of failed attempts a user can have "
               "before being blocked.")
+    ).tag(
+        config=True,
+        default=0
     )
     seconds_before_next_try = Integer(
-        config=True,
-        default=600,
         help=("Configures the number of seconds a user has to wait "
               "after being blocked. Default is 600.")
+    ).tag(
+        config=True,
+        default=600
     )
     enable_signup = Bool(
-        config=True,
         default_value=True,
         help=("Allows every user to registry a new account")
-    )
+    ).tag(config=True)
     open_signup = Bool(
-        config=True,
         default_value=False,
         help=("Allows every user that made sign up to automatically log in "
               "the system without needing admin authorization")
-    )
+    ).tag(config=True)
     ask_email_on_signup = Bool(
-        False,
-        config=True,
+        default_value=False,
         help="Asks for email on signup"
-    )
+    ).tag(config=True)
     import_from_firstuse = Bool(
-        False,
-        config=True,
+        default_value=False,
         help="Import users from FirstUse Authenticator database"
-    )
+    ).tag(config=True)
     firstuse_db_path = Unicode(
-        'passwords.dbm',
-        config=True,
+        default_value='passwords.dbm',
         help="""
         Path to store the db file of FirstUse with username / pwd hash in
         """
-    )
+    ).tag(config=True)
     delete_firstuse_db_after_import = Bool(
-        config=True,
         default_value=False,
         help="Deletes FirstUse Authenticator database after the import"
-    )
+    ).tag(config=True)
     allow_2fa = Bool(
-        False,
-        config=True,
+        default_value=False,
         help=""
-    )
+    ).tag(config=True,)
 
     def __init__(self, add_new_table=True, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -241,8 +239,8 @@ class NativeAuthenticator(Authenticator):
         db_complete_path = str(db_path.absolute())
 
         # necessary for BSD implementation of dbm lib
-        if os.path.exists(os.path.join(db_dir, db_name + '.db')):
-            os.remove(db_complete_path + '.db')
+        if os.path.exists(os.path.join(db_dir, db_name + '.dat')):
+            os.remove(db_complete_path + '.dat')
         else:
             os.remove(db_complete_path)
 
