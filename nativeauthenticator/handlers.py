@@ -1,7 +1,7 @@
 import os
 from jinja2 import ChoiceLoader, FileSystemLoader
 from jupyterhub.handlers import BaseHandler
-from jupyterhub.handlers.login import LoginHandler
+from jupyterhub.handlers.login import LoginHandler as LoginHandlerBase
 from jupyterhub.utils import admin_only
 
 from tornado import web
@@ -84,7 +84,7 @@ class SignUpHandler(LocalBase):
             'has_2fa': bool(self.get_body_argument('2fa', '', strip=False)),
         }
         user = self.authenticator.create_user(**user_info)
-        name = self.authenticator.user_exists(user_info['username'])
+        name = user_info['username']
 
         alert, message = self.get_result_message(user, name)
 
@@ -147,7 +147,7 @@ class ChangePasswordHandler(LocalBase):
         self.finish(html)
 
 
-class LoginHandler(LoginHandler, LocalBase):
+class LoginHandler(LoginHandlerBase, LocalBase):
 
     def _render(self, login_error=None, username=None):
         self._register_template_path()
