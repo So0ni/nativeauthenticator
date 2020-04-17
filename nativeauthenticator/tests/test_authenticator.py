@@ -222,7 +222,7 @@ async def test_import_from_firstuse_dont_delete_db_after(tmpcwd, app):
 
     files = os.listdir()
     assert UserInfo.find(app.db, 'user1')
-    assert ('passwords.dbm' in files) or ('passwords.dbm.db' in files)
+    assert ('passwords.dbm' in files) or ('passwords.dbm.dat' in files)
 
 
 async def test_import_from_firstuse_delete_db_after(tmpcwd, app):
@@ -235,7 +235,7 @@ async def test_import_from_firstuse_delete_db_after(tmpcwd, app):
     auth.add_data_from_firstuse()
     files = os.listdir()
     assert UserInfo.find(app.db, 'user1')
-    assert ('passwords.dbm' not in files) and ('passwords.dbm.db' not in files)
+    assert ('passwords.dbm' not in files) and ('passwords.dbm.dat' not in files)
 
 
 @pytest.mark.parametrize("user,pwd", [
